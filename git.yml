@@ -1,0 +1,12 @@
+---
+- hosts: nodes
+  tasks:
+   - name: install git
+     apt: pkg=git state=installed
+     register: gitinstalled
+
+   - name: clone github
+     command: rm -rf /root/ansible-exp ; git clone https://github.com/stephenhickie/ansible-exp.git
+     register: clonedgithub
+
+

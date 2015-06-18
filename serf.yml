@@ -1,0 +1,26 @@
+---
+- hosts: all
+  tasks:
+   - name: Get serf
+     get_url:
+       url="https://dl.bintray.com/mitchellh/serf/0.6.4_linux_amd64.zip"
+       dest="/tmp/serf.zip"
+     register: new_archive
+
+   - name: Get unzip
+     apt: pkg=unzip state=installed
+     register: unzipinstalled
+
+   - name: Unarchive source
+     unarchive:
+       src="/tmp/serf.zip"
+       dest="/usr/local/bin"
+       copy=no
+     register: serf-installed
+
+   - name: run serf
+     command: killall serf
+     command: /usr/local/bin/serf agent --discover myserf-cluster -node={{ ansible_default_ipv4.address }}
+     async: 45
+     poll: 0
+     register: serf-running
